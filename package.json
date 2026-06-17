@@ -12,13 +12,17 @@
   },
   "license": "MIT",
   "author": "hhehasj",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon ./src/server.ts"
   },
   "dependencies": {
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
-    "nodemon": "^3.1.14"
+    "free-use-bible-api": "^0.2.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2"
   }
 }
