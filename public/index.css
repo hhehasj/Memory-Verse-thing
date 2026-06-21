@@ -39,7 +39,7 @@ main {
     background-color: var(--color5);
 }
 
-#MV-title {
+#mv-title {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
@@ -56,6 +56,15 @@ main {
     top: calc(50vh + 22.5vh + 30px);
     display: flex;
     justify-content: space-between;
+}
+
+#quick-entry {
+    position: fixed;
+    width: 20%;
+    max-width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(50vh + 22.5vh + 75px);
 }
 
 #overlay {

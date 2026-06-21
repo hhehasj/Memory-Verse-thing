@@ -1,12 +1,19 @@
-import { FreeUseBibleApi } from "free-use-bible-api";
+const api_token: string = "ntrH8oT1SoHTm6VcKtrQM5qKJ4O1sbEE6lHdSBO9G5OuZW2E";
 
-const api = new FreeUseBibleApi();
+export async function get_passage(translation: number, book: string, chapter: string, verse: string) {
+  const options = {
+    method: "GET",
+    headers: {
+      "X-YVP-App-Key": api_token,
+    },
+  };
 
-const available = await api.getAvailableTranslations();
-console.log("Total translations:", available.translations.length);
+  const passage_path: string = `${book}.${chapter}.${verse}`.trim();
+  console.log(translation, typeof translation);
+  console.log(passage_path, typeof passage_path);
 
-const books = await api.getTranslationBooks("BSB");
-console.log("Books in BSB:", books.books.length);
-
-const chapter = await api.getTranslationBookChapter("BSB", "GEN", 1);
-console.log("Verses in Genesis 1:", chapter.numberOfVerses);
+  fetch(`https://api.youversion.com/v1/bibles/${translation}/passages/${passage_path}`, options)
+    .then((response) => response.json())
+    .then((response) => console.log(response))
+    .catch((err) => console.error(err));
+}
