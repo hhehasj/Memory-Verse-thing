@@ -4,6 +4,7 @@
     --color3: #5e6572;
     --color4: #a9b4c2;
     --color5: #eef1ef;
+    font-family: "Comic Sans MS", sans-serif, Helvetica, Arial;
 }
 
 body {
@@ -34,8 +35,10 @@ main {
     max-width: 100vw;
     max-height: 100dvh;
     margin: auto;
-    border: 7px solid black;
     border-radius: 15px;
+    box-shadow:
+        0 4px 6px -1px hsl(0, 0%, 0.8%, 0.25),
+        0 2px 4px -1px hsl(0, 0%, 0.8%, 0.3);
     background-color: var(--color5);
 }
 
@@ -43,8 +46,14 @@ main {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
-    bottom: calc(50vh + 22.5vh + 30px);
+    bottom: calc(50vh + 22.5vh + 16px);
     margin: 0;
+    font-size: 1.5rem;
+}
+
+#main-display {
+    padding: 10px 15px;
+    caret-color: transparent;
 }
 
 #button-group1 {
@@ -53,9 +62,28 @@ main {
     max-width: 100vw;
     left: 50%;
     transform: translateX(-50%);
-    top: calc(50vh + 22.5vh + 30px);
+    top: calc(50vh + 23.5vh + 25px);
     display: flex;
     justify-content: space-between;
+}
+.switch-btns {
+    border: none;
+    background-color: var(--color2);
+    font-size: 1.3rem;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+    box-shadow:
+        0 3px 6px -2px hsl(0, 0%, 0.7%, 0.5),
+        0 1px 4px -2px hsl(0, 0%, 0.7%, 0.8);
+}
+.switch-btns:hover {
+    filter: brightness(0.88);
+}
+.switch-btns:active {
+    filter: brightness(0.7);
 }
 
 #quick-entry {
@@ -64,7 +92,7 @@ main {
     max-width: 100vw;
     left: 50%;
     transform: translateX(-50%);
-    top: calc(50vh + 22.5vh + 75px);
+    top: calc(50vh + 25vh + 85px);
 }
 
 #overlay {
@@ -86,5 +114,18 @@ main {
     z-index: 100;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-    /*display: none;*/
+}
+
+.typing_cursor {
+    background-color: #7d98a1;
+    color: white;
+    border-bottom: 3px solid #1c2321;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+.char_correct {
+    background-color: green;
+}
+.char_wrong {
+    background-color: red;
 }

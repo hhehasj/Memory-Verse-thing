@@ -1,5 +1,10 @@
 const setting_btn = document.getElementById("setting-btn");
 const quick_entry = document.getElementById("quick-entry");
+const main_display = document.getElementById("main-display");
+
+let Original;
+let Blanks;
+let cursorIndex;
 
 function return_versions_book(version, book) {
   const default_versions = new Map([
@@ -55,19 +60,19 @@ function return_versions_book(version, book) {
     ["john", "JHN"],
     ["acts", "ACT"],
     ["romans", "ROM"],
-    ["1 corinthians", "2CO"],
+    ["1 corinthians", "1CO"],
     ["2 corinthians", "2CO"],
     ["galatians", "GAL"],
     ["ephesians", "EPH"],
     ["philippians", "PHP"],
-    ["colossians", "COl"],
+    ["colossians", "COL"],
     ["1 thessalonians", "1TH"],
     ["2 thessalonians", "2TH"],
     ["1 timothy", "1TI"],
     ["2 timothy", "2TI"],
     ["titus", "TIT"],
     ["philemon", "PHM"],
-    ["hebrew", "HEB"],
+    ["hebrews", "HEB"],
     ["james", "JAS"],
     ["1 peter", "1PE"],
     ["2 peter", "2PE"],
@@ -75,7 +80,7 @@ function return_versions_book(version, book) {
     ["2 john", "2JN"],
     ["3 john", "3JN"],
     ["jude", "JUD"],
-    ["revalation", "REV"],
+    ["revelation", "REV"],
   ]);
 
   let return_values = new Array();
@@ -93,24 +98,105 @@ function return_versions_book(version, book) {
 
 quick_entry.addEventListener("keydown", async (event) => {
   if (event.key == "Enter") {
+    Original = "";
+    Blanks = [];
+    cursorIndex = 0;
+
+    main_display.dataset.userType = "true";
+
     const [entry_book, chapter, verse] = event.target.value.split(/[\s:]/);
     const entry_translation = "NIV";
-    // TEST: console.log(entry_book, typeof entry_book);
-    // TEST: console.log(chapter, typeof chapter);
-    // TEST: console.log(verse, typeof verse);
 
     const [translation, book] = return_versions_book(entry_translation, entry_book.toLowerCase());
-    // TEST: console.log(translation, typeof translation);
-    // TEST: console.log(book, typeof book);
 
     event.target.value = "";
 
     const mv_title = document.getElementById("mv-title");
     mv_title.innerHTML = `${entry_translation} ${entry_book} ${chapter}:${verse}`;
 
-    await fetch(`http://localhost:8080/${translation}/${book}/${chapter}/${verse}`);
-    console.log("Received");
+    const server_response = await fetch(`http://localhost:8080/${translation}/${book}/${chapter}/${verse}`);
+    Original = await server_response.json();
+    console.log("API: ", Original);
+
+    // TODO: Convert letters into blanks inside an array
+    for (let i = 0; i < Original.length; i++) {
+      if (/[a-zA-Z0-9]/.test(Original[i])) {
+        Blanks.push({
+          character: "_",
+          status: "pending",
+        });
+      } else {
+        Blanks.push({
+          character: Original[i],
+          status: "non-alphanumeric",
+        });
+      }
+    }
+
+    // Initial rendering
+    renderDisplay();
+
+    quick_entry.blur();
+    main_display.focus();
   }
+});
+
+function renderDisplay() {
+  let htmlOutput = "";
+
+  // Display the blanks and the cursor
+  for (let i = 0; i < Blanks.length; i++) {
+    let className = "";
+
+    if (Blanks[i].status === "non-alphanumeric") {
+      htmlOutput += Blanks[i].character;
+      continue;
+    }
+
+    // Show what the user typed, or "_" if not yet reached
+    const displayCharacter = Blanks[i].character;
+
+    if (i === cursorIndex && main_display.dataset.userType === "true") {
+      className = "typing_cursor";
+    } else if (Blanks[i].status === "true") {
+      className = "char_correct";
+    } else if (Blanks[i].status === "false") {
+      className = "char_wrong";
+    }
+    htmlOutput += `<span class="${className}">${displayCharacter}</span>`;
+  }
+  main_display.innerHTML = htmlOutput;
+}
+
+main_display.addEventListener("keydown", (event) => {
+  if (main_display.dataset.userType !== "true") {
+    return;
+  }
+  if (event.key.length !== 1 || !/[a-zA-Z0-9]/.test(event.key)) {
+    return;
+  }
+
+  event.preventDefault();
+
+  // Store what the user typed, then mark correct or wrong.
+
+  Blanks[cursorIndex].character = event.key;
+  if (event.key === Original[cursorIndex]) {
+    Blanks[cursorIndex].status = "true";
+  } else {
+    Blanks[cursorIndex].status = "false";
+  }
+  cursorIndex++;
+
+  while (cursorIndex < Blanks.length && Blanks[cursorIndex].status !== "pending") {
+    cursorIndex++;
+  }
+
+  if (cursorIndex >= Blanks.length) {
+    main_display.dataset.userType = "false";
+  }
+
+  renderDisplay();
 });
 
 let clicked = false;

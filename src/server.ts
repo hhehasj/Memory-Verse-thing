@@ -26,5 +26,11 @@ app.get("/:translation/:book/:chapter/:verse", async (req, res) => {
   // TEST: console.log(Number(translation), book, chapter, verse);
   // TEST: console.log(typeof Number(translation), typeof book, typeof chapter, typeof verse);
 
-  get_passage(Number(translation), book, chapter, verse);
+  try {
+    const api_passage = await get_passage(Number(translation), book, chapter, verse);
+    // TEST: console.log(passage, typeof passage);
+    res.json(api_passage);
+  } catch (err) {
+    console.error(err);
+  }
 });
