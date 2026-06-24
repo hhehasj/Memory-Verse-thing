@@ -172,6 +172,23 @@ main_display.addEventListener("keydown", (event) => {
   if (main_display.dataset.userType !== "true") {
     return;
   }
+
+  if (event.key === "Backspace") {
+    console.log(event.key);
+    event.preventDefault();
+    if (cursorIndex > 0) {
+      cursorIndex--;
+
+      while (cursorIndex > 0 && Blanks[cursorIndex].status === "non-alphanumeric") {
+        cursorIndex--;
+      }
+      Blanks[cursorIndex].character = "_";
+      Blanks[cursorIndex].status = "pending";
+      renderDisplay();
+    }
+    return;
+  }
+
   if (event.key.length !== 1 || !/[a-zA-Z0-9]/.test(event.key)) {
     return;
   }
