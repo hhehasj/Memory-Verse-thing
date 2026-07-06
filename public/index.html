@@ -18,7 +18,7 @@
                     height="40px"
                 />
             </button>
-            <div id="main-display" contenteditable="true" data-user-type="false"></div>
+            <div id="main-display" contenteditable="false" data-user-type="false"></div>
             <div id="button-group1">
                 <button id="prev-btn" class="switch-btns">Prev</button>
                 <button id="show-btn" class="switch-btns">Show</button>
@@ -27,12 +27,93 @@
             <input id="quick-entry" placeholder="Genesis 1:1 or GEN 1:1" />
         </main>
 
-        <!--Sidebar-->
+        <!--Settings Window-->
         <div id="overlay"></div>
-        <aside id="sidebar">
-            <input id="main-input" />
-        </aside>
-        <!----------->
+        <div id="settings-window">
+            <select id="translation-selection">
+                <option value="NIV">NIV</option>
+                <option value="AMP">AMP</option>
+                <option value="NASB">NASB</option>
+            </select>
+            <div id="select-container">
+                <select id="books" class="selections">
+                    <option>Select a Book</option>
+                    <option value="genesis">Genesis</option>
+                    <option value="exodus">Exodus</option>
+                    <option value="leviticus">Leviticus</option>
+                    <option value="numbers">Numbers</option>
+                    <option value="deuteronomy">Deuteronomy</option>
+                    <option value="joshua">Joshua</option>
+                    <option value="judges">Judges</option>
+                    <option value="ruth">Ruth</option>
+                    <option value="1 samuel">1 Samuel</option>
+                    <option value="2 samuel">2 Samuel</option>
+                    <option value="1 kings">1 Kings</option>
+                    <option value="2 kings">2 Kings</option>
+                    <option value="1 chronicles">1 Chronicles</option>
+                    <option value="2 chronicles">2 Chronicles</option>
+                    <option value="ezra">Ezra</option>
+                    <option value="nehemiah">Nehemiah</option>
+                    <option value="esther">Esther</option>
+                    <option value="job">Job</option>
+                    <option value="psalms">Psalms</option>
+                    <option value="proverbs">Proverbs</option>
+                    <option value="ecclesiastes">Ecclesiastes</option>
+                    <option value="song of solomon">Song of Solomon</option>
+                    <option value="isaiah">Isaiah</option>
+                    <option value="jeremiah">Jeremiah</option>
+                    <option value="lamentations">Lamentations</option>
+                    <option value="ezekiel">Ezekiel</option>
+                    <option value="daniel">Daniel</option>
+                    <option value="hosea">Hosea</option>
+                    <option value="joel">Joel</option>
+                    <option value="amos">Amos</option>
+                    <option value="obadiah">Obadiah</option>
+                    <option value="jonah">Jonah</option>
+                    <option value="micah">Micah</option>
+                    <option value="nahum">Nahum</option>
+                    <option value="habakkuk">Habakkuk</option>
+                    <option value="zephaniah">Zephaniah</option>
+                    <option value="haggai">Haggai</option>
+                    <option value="zechariah">Zechariah</option>
+                    <option value="malachi">Malachi</option>
+                    <option value="matthew">Matthew</option>
+                    <option value="mark">Mark</option>
+                    <option value="luke">Luke</option>
+                    <option value="john">John</option>
+                    <option value="acts">Acts</option>
+                    <option value="romans">Romans</option>
+                    <option value="1 corinthians">1 Corinthians</option>
+                    <option value="2 corinthians">2 Corinthians</option>
+                    <option value="galatians">Galatians</option>
+                    <option value="ephesians">Ephesians</option>
+                    <option value="philippians">Philippians</option>
+                    <option value="colossians">Colossians</option>
+                    <option value="1 thessalonians">1 Thessalonians</option>
+                    <option value="2 thessalonians">2 Thessalonians</option>
+                    <option value="1 timothy">1 Timothy</option>
+                    <option value="2 timothy">2 Timothy</option>
+                    <option value="titus">Titus</option>
+                    <option value="philemon">Philemon</option>
+                    <option value="hebrews">Hebrews</option>
+                    <option value="james">James</option>
+                    <option value="1 peter">1 Peter</option>
+                    <option value="2 peter">2 Peter</option>
+                    <option value="1 john">1 John</option>
+                    <option value="2 john">2 John</option>
+                    <option value="3 john">3 John</option>
+                    <option value="jude">Jude</option>
+                    <option value="revelation">Revelation</option>
+                </select>
+                <select id="chapter" class="selections">
+                    <option>Select Chapter</option>
+                </select>
+                <select id="verse" class="selections" multiple>
+                    <option>Select Verse</option>
+                </select>
+                <button id="save-selected">ADD</button>
+            </div>
+        </div>
     </body>
 
     <script type="module" src="./index.js"></script>
