@@ -8,8 +8,13 @@ const save_selected = document.getElementById("save-selected");
 const verse_select = document.getElementById("verse");
 
 let Original;
-let Blanks;
+let Blanks = [];
 let cursorIndex;
+
+// window.addEventListener("DOMContentLoaded", async () => {
+//   console.log("Fetching\n");
+//   const response = await fetch("http://localhost:8080/db/load_verses");
+// });
 
 function return_versions_book(version, book) {
   const default_versions = new Map([
@@ -131,7 +136,6 @@ function renderDisplay() {
 quick_entry.addEventListener("keydown", async (event) => {
   if (event.key == "Enter") {
     Original = "";
-    Blanks = [];
     cursorIndex = 0;
 
     main_display.dataset.userType = "true";
@@ -149,23 +153,24 @@ quick_entry.addEventListener("keydown", async (event) => {
 
     const server_response = await fetch(`http://localhost:8080/${translation}/${book}/${chapter}/${verse}`);
     Original = await server_response.json();
-    console.log("API: ", Original);
+    TEST: console.log("API: ", Original);
 
     // TODO: Convert letters into blanks inside an array
-    for (let i = 0; i < Original.length; i++) {
-      if (/[a-zA-Z0-9]/.test(Original[i])) {
+    for (let i = 0; i < Original.content.length; i++) {
+      if (/[a-zA-Z0-9]/.test(Original.content[i])) {
         Blanks.push({
           character: "_",
           status: "pending",
         });
       } else {
         Blanks.push({
-          character: Original[i],
+          character: Original.content[i],
           status: "non-alphanumeric",
         });
       }
     }
 
+    TEST: console.log(Blanks);
     // Initial rendering
     renderDisplay();
 
@@ -202,7 +207,7 @@ main_display.addEventListener("keydown", (event) => {
 
   // Store what the user typed, then mark correct or wrong.
   Blanks[cursorIndex].character = event.key;
-  if (event.key === Original[cursorIndex]) {
+  if (event.key === Original.content[cursorIndex]) {
     Blanks[cursorIndex].status = "true";
   } else {
     Blanks[cursorIndex].status = "false";

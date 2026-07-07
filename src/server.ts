@@ -3,7 +3,7 @@ import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import { get_passage, get_max_verses } from "./get_bible.ts";
-import { addVerse } from "./database.ts";
+import { addVerse, loadVerses } from "./database.ts";
 
 const app = express();
 const PORT = 8080;
@@ -11,16 +11,18 @@ const PORT = 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../public")));
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public"));
+app.get("/db/load_verses", async (req, res) => {
+  try {
+    console.log("Retreiving\n");
+    const db_response = await loadVerses();
+    res.json(db_response);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.get("/:translation/:book/:chapter/", async (req, res) => {
@@ -36,7 +38,7 @@ app.get("/:translation/:book/:chapter/", async (req, res) => {
   } catch (err) {
     console.error(err);
   }
-});
+}); // For getting verses
 
 app.get("/:translation/:book/:chapter/:verse", async (req, res) => {
   const { translation, book, chapter, verse } = req.params;
@@ -50,7 +52,7 @@ app.get("/:translation/:book/:chapter/:verse", async (req, res) => {
   } catch (err) {
     console.error(err);
   }
-});
+}); // For getting passages
 
 app.post("/add_verse/", async (req, res) => {
   console.log("In server\n");
@@ -62,4 +64,8 @@ app.post("/add_verse/", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+}); // For adding verse to database
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
 });

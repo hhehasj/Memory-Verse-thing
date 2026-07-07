@@ -6,9 +6,18 @@ const client = new MongoClient(url);
 
 const databaseName = "MemoryVerse-Thing";
 
+export async function loadVerses() {
+  console.log("Reading\n");
+  await client.connect();
+
+  const db = client.db(databaseName);
+  const collection = db.collection("Verses");
+
+  const results = await collection.find({}).toArray();
+  console.log("Found documents => ", results);
+}
+
 export async function addVerse(translation_id: number, book_abbrev: string, chapter: string, verses: string) {
-  console.log("In database.ts");
-  console.log(translation_id, book_abbrev, chapter, verses);
   await client.connect();
 
   const db = client.db(databaseName);
