@@ -17,8 +17,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.get("/db/load_verses", async (req, res) => {
   try {
-    console.log("Retreiving\n");
-    const db_response = await loadVerses();
+    const db_response: Array<Array<string>> = await loadVerses();
     res.json(db_response);
   } catch (err) {
     console.log(err);

@@ -1,20 +1,32 @@
 const setting_btn = document.getElementById("setting-btn");
 const quick_entry = document.getElementById("quick-entry");
-const main_display = document.getElementById("main-display");
+const main_display_front = document.getElementById("main-display-front");
 const translation_select = document.getElementById("translation-selection");
 const books_select = document.getElementById("books");
 const chapter_select = document.getElementById("chapter");
 const save_selected = document.getElementById("save-selected");
 const verse_select = document.getElementById("verse");
+const button_group1 = document.getElementById("button-group1");
 
 let Original;
-let Blanks = [];
+let Blanks;
 let cursorIndex;
+let arrayIndex = 0;
 
-// window.addEventListener("DOMContentLoaded", async () => {
-//   console.log("Fetching\n");
-//   const response = await fetch("http://localhost:8080/db/load_verses");
-// });
+window.addEventListener("DOMContentLoaded", async function display_loadedVerses() {
+  const response = await fetch("http://localhost:8080/db/load_verses");
+  const data = await response.json();
+  globalThis.Arrays_of_Verses = data;
+
+  Original = data[arrayIndex][1];
+  Blanks = [];
+  cursorIndex = 0;
+
+  // TEST: console.log(Blanks);
+  convert_to_blanks(Original);
+
+  renderDisplay();
+});
 
 function return_versions_book(version, book) {
   const default_versions = new Map([
@@ -106,7 +118,34 @@ function return_versions_book(version, book) {
   return return_values;
 }
 
+function convert_to_blanks(Passage) {
+  for (let i = 0; i < Passage.length; i++) {
+    if (/[a-zA-Z0-9]/.test(Passage[i])) {
+      Blanks.push({
+        character: "_",
+        status: "pending",
+      });
+    } else {
+      Blanks.push({
+        character: Passage[i],
+        status: "non-alphanumeric",
+      });
+    }
+  }
+}
+
 function renderDisplay() {
+  /* TODO: if (finished) {
+    main_display.textContent = "";
+    return;
+    } */
+
+  main_display_front.dataset.userType = "true";
+  main_display_front.setAttribute("contenteditable", "true");
+
+  const mv_title = document.getElementById("mv-title");
+  mv_title.innerHTML = Arrays_of_Verses[arrayIndex][0];
+
   let htmlOutput = "";
 
   // Display the blanks and the cursor
@@ -121,7 +160,7 @@ function renderDisplay() {
     // Show what the user typed, or "_" if not yet reached
     const displayCharacter = Blanks[i].character;
 
-    if (i === cursorIndex && main_display.dataset.userType === "true") {
+    if (i === cursorIndex && main_display_front.dataset.userType === "true") {
       className = "typing_cursor";
     } else if (Blanks[i].status === "true") {
       className = "char_correct";
@@ -130,16 +169,19 @@ function renderDisplay() {
     }
     htmlOutput += `<span class="${className}">${displayCharacter}</span>`;
   }
-  main_display.innerHTML = htmlOutput;
+  main_display_front.innerHTML = htmlOutput;
+
+  const main_display_rear = document.getElementById("main-display-rear");
+  main_display_rear.textContent = Original;
+
+  main_display_front.focus();
 }
 
 quick_entry.addEventListener("keydown", async (event) => {
   if (event.key == "Enter") {
     Original = "";
+    Blanks = [];
     cursorIndex = 0;
-
-    main_display.dataset.userType = "true";
-    main_display.setAttribute("contenteditable", "true");
 
     const [entry_book, chapter, verse] = event.target.value.split(/[\s:]/);
     const entry_translation = "NIV";
@@ -152,37 +194,28 @@ quick_entry.addEventListener("keydown", async (event) => {
     mv_title.innerHTML = `${entry_translation} ${entry_book} ${chapter}:${verse}`;
 
     const server_response = await fetch(`http://localhost:8080/${translation}/${book}/${chapter}/${verse}`);
-    Original = await server_response.json();
-    TEST: console.log("API: ", Original);
+    const server_data = await server_response.json();
+    Original = server_data.content;
+    Arrays_of_Verses.push([[Original].push(server_data.reference)]);
 
-    // TODO: Convert letters into blanks inside an array
-    for (let i = 0; i < Original.content.length; i++) {
-      if (/[a-zA-Z0-9]/.test(Original.content[i])) {
-        Blanks.push({
-          character: "_",
-          status: "pending",
-        });
-      } else {
-        Blanks.push({
-          character: Original.content[i],
-          status: "non-alphanumeric",
-        });
-      }
-    }
+    // TEST: console.log("API: ", Original);
 
-    TEST: console.log(Blanks);
+    // Convert letters into blanks inside an array
+    convert_to_blanks(Original);
+
+    // TEST: console.log(Blanks);
     // Initial rendering
     renderDisplay();
 
-    quick_entry.blur();
-    main_display.focus();
+    main_display_front.focus();
   }
 });
 
-main_display.addEventListener("keydown", (event) => {
-  if (main_display.dataset.userType !== "true") {
+main_display_front.addEventListener("keydown", (event) => {
+  if (main_display_front.dataset.userType !== "true") {
     return;
   }
+  // TODO: let finished = false;
 
   if (event.key === "Backspace") {
     event.preventDefault();
@@ -207,7 +240,7 @@ main_display.addEventListener("keydown", (event) => {
 
   // Store what the user typed, then mark correct or wrong.
   Blanks[cursorIndex].character = event.key;
-  if (event.key === Original.content[cursorIndex]) {
+  if (event.key === Original[cursorIndex]) {
     Blanks[cursorIndex].status = "true";
   } else {
     Blanks[cursorIndex].status = "false";
@@ -219,8 +252,9 @@ main_display.addEventListener("keydown", (event) => {
   }
 
   if (cursorIndex >= Blanks.length) {
-    main_display.dataset.userType = "false";
-    main_display.setAttribute("contenteditable", "false");
+    main_display_front.dataset.userType = "false";
+    main_display_front.setAttribute("contenteditable", "false");
+    // TODO: finished = true;
   }
 
   renderDisplay();
@@ -359,6 +393,50 @@ save_selected.addEventListener("click", async (event) => {
     });
   } catch (err) {
     console.error("Network error:", err);
+  }
+});
+
+button_group1.addEventListener("click", (event) => {
+  if (event.target.matches("button")) {
+    const button_pressed = event.target;
+    const main_display = document.getElementById("main-display");
+
+    if (button_pressed.id === "prev-btn") {
+      if (Arrays_of_Verses[--arrayIndex]) {
+        console.log(Arrays_of_Verses[arrayIndex]);
+        Original = Arrays_of_Verses[arrayIndex][1];
+        console.log(Original);
+        cursorIndex = 0;
+        Blanks = [];
+        convert_to_blanks(Original);
+
+        main_display.classList.remove("is_flipped");
+
+        renderDisplay();
+      }
+    }
+
+    if (button_pressed.id === "show-btn") {
+      // main_display.style.transform = "rotateX(180deg)";
+      // console.log("SHOW-BTN");
+      main_display.classList.toggle("flipped");
+      console.log(main_display.classList);
+    }
+
+    if (button_pressed.id === "next-btn") {
+      if (Arrays_of_Verses[++arrayIndex]) {
+        console.log(Arrays_of_Verses[arrayIndex]);
+        Original = Arrays_of_Verses[arrayIndex][1];
+        console.log(Original);
+        cursorIndex = 0;
+        Blanks = [];
+        convert_to_blanks(Original);
+
+        main_display.classList.remove("is_flipped");
+
+        renderDisplay();
+      }
+    }
   }
 });
 

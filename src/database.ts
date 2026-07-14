@@ -7,14 +7,25 @@ const client = new MongoClient(url);
 const databaseName = "MemoryVerse-Thing";
 
 export async function loadVerses() {
-  console.log("Reading\n");
   await client.connect();
 
   const db = client.db(databaseName);
   const collection = db.collection("Verses");
 
-  const results = await collection.find({}).toArray();
-  console.log("Found documents => ", results);
+  const VersesArray: Array<Array<string>> = new Array();
+
+  const db_Verses_array = await collection.find({}).toArray();
+
+  db_Verses_array.forEach((db_Verse) => {
+    let VersesContent: Array<string> = new Array();
+    VersesContent.push(db_Verse.completed);
+    VersesContent.push(db_Verse.passage);
+
+    VersesArray.push(VersesContent);
+  });
+
+  // TEST: console.dir(VersesArray);
+  return VersesArray;
 }
 
 export async function addVerse(translation_id: number, book_abbrev: string, chapter: string, verses: string) {
@@ -36,7 +47,7 @@ export async function addVerse(translation_id: number, book_abbrev: string, chap
     api_id: api_response.id,
     completed: api_response.reference,
   });
-  console.log("Inserted documents =>", insertResult);
+  // TEST: console.log("Inserted documents =>", insertResult);
 
   return "done";
 }
