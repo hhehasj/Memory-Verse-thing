@@ -4,9 +4,9 @@ import cors from "cors";
 import { fileURLToPath } from "url";
 import { get_passage, get_max_verses } from "./get_bible.ts";
 import { addVerse, loadVerses } from "./database.ts";
+import "dotenv/config";
 
 const app = express();
-const PORT = 8080;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,6 +65,6 @@ app.post("/add_verse/", async (req, res) => {
   }
 }); // For adding verse to database
 
-app.listen(PORT, () => {
-  console.log(`App is running on ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`App is running on ${process.env.PORT}`);
 });

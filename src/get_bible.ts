@@ -1,4 +1,6 @@
-const api_token: string = "ntrH8oT1SoHTm6VcKtrQM5qKJ4O1sbEE6lHdSBO9G5OuZW2E";
+import "dotenv/config";
+
+const api_token: string = process.env.API_TOKEN;
 const options = {
   method: "GET",
   headers: {

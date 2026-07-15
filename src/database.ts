@@ -1,8 +1,9 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { get_passage } from "./get_bible.ts";
+import "dotenv/config";
 
-const url =
-  "mongodb://alfredlennardaquino_db_user:mFiJanCjkAW9eufm@ac-orfhosp-shard-00-00.ilr3kvd.mongodb.net:27017,ac-orfhosp-shard-00-01.ilr3kvd.mongodb.net:27017,ac-orfhosp-shard-00-02.ilr3kvd.mongodb.net:27017/?ssl=true&replicaSet=atlas-mj23yg-shard-0&authSource=admin&appName=MemoryVerse-Thing";
+const url = process.env.MONGO_URL;
+
 const clientOptions = {
   serverApi: {
     version: ServerApiVersion.v1,
