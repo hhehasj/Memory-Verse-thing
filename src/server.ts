@@ -66,5 +66,5 @@ app.post("/add_verse/", async (req, res) => {
 }); // For adding verse to database
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`App is running on ${PORT}`);
 });
