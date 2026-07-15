@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
-import { get_passage, get_max_verses } from "./get_bible";
-import { addVerse, loadVerses } from "./database";
+import { get_passage, get_max_verses } from "./get_bible.ts";
+import { addVerse, loadVerses } from "./database.ts";
 import "dotenv/config";
 
 const app = express();
