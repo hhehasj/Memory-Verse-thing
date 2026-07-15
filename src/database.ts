@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { get_passage } from "./get_bible.ts";
+import { get_passage } from "./get_bible";
 import "dotenv/config";
 
 const url = process.env.MONGO_URL;
