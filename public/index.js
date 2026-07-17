@@ -12,10 +12,12 @@ let Original;
 let Blanks;
 let cursorIndex;
 let arrayIndex = 0;
-const Server_Port = 0;
+const PORT = 8080;
+// const API_BASE =
+//   location.hostname === "localhost" ? `http://localhost:${PORT}/` : "https://renderbackend-memoryverse.onrender.com/";
 
 window.addEventListener("DOMContentLoaded", async function display_loadedVerses() {
-  const response = await fetch(`http://localhost:8080/db/load_verses`);
+  const response = await fetch("db/load_verses");
   const data = await response.json();
   globalThis.Arrays_of_Verses = data;
 
@@ -194,7 +196,7 @@ quick_entry.addEventListener("keydown", async (event) => {
     const mv_title = document.getElementById("mv-title");
     mv_title.innerHTML = `${entry_translation} ${entry_book} ${chapter}:${verse}`;
 
-    const server_response = await fetch(`http://localhost:8080/${translation}/${book}/${chapter}/${verse}`);
+    const server_response = await fetch(`${translation}/${book}/${chapter}/${verse}`);
     const server_data = await server_response.json();
     Original = server_data.content;
     Arrays_of_Verses.push([[Original].push(server_data.reference)]);
@@ -350,7 +352,7 @@ chapter_select.addEventListener("click", async (event) => {
     const [translation_id, book_abbrev] = return_versions_book("NIV", books_select.value);
     // TEST: console.log(translation_id, book_abbrev, event.target.value);
 
-    const response = await fetch(`http://localhost:8080/${translation_id}/${book_abbrev}/${event.target.value}/`);
+    const response = await fetch(`${translation_id}/${book_abbrev}/${event.target.value}/`);
     const api_data = await response.json();
     // TEST: console.log(api_data.data.length);
 
@@ -380,7 +382,7 @@ save_selected.addEventListener("click", async (event) => {
   const [translation_id, book_abbrev] = return_versions_book(translation_select.value, books_select.value);
   console.log(translation_id, book_abbrev, chapter_select.value, verse_formatted);
   try {
-    const server_response = await fetch(`http://localhost:8080/add_verse`, {
+    const server_response = await fetch(`add_verse`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
