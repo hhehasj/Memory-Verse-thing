@@ -147,7 +147,7 @@ function renderDisplay() {
   main_display_front.setAttribute("contenteditable", "true");
 
   const mv_title = document.getElementById("mv-title");
-  mv_title.innerHTML = Arrays_of_Verses[arrayIndex][0];
+  mv_title.innerHTML = translation_select.value + " " + Arrays_of_Verses[arrayIndex][0];
 
   let htmlOutput = "";
 
@@ -187,19 +187,20 @@ quick_entry.addEventListener("keydown", async (event) => {
     cursorIndex = 0;
 
     const [entry_book, chapter, verse] = event.target.value.split(/[\s:]/);
-    const entry_translation = "NIV";
+    // const entry_translation = "NIV";
+    const entry_translation = translation_select.value;
 
     const [translation, book] = return_versions_book(entry_translation, entry_book.toLowerCase());
 
     event.target.value = "";
 
-    const mv_title = document.getElementById("mv-title");
-    mv_title.innerHTML = `${entry_translation} ${entry_book} ${chapter}:${verse}`;
-
     const server_response = await fetch(`${translation}/${book}/${chapter}/${verse}`);
     const server_data = await server_response.json();
     Original = server_data.content;
-    Arrays_of_Verses.push([[Original].push(server_data.reference)]);
+    Arrays_of_Verses.unshift([server_data.reference, Original]);
+
+    // const mv_title = document.getElementById("mv-title");
+    // mv_title.innerHTML = `${entry_translation} ${entry_book} ${chapter}:${verse}`;
 
     // TEST: console.log("API: ", Original);
 
