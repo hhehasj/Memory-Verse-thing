@@ -33,14 +33,30 @@
         <!--Settings Window-->
         <div id="overlay"></div>
         <div id="settings-window">
-            <select id="translation-selection">
-                <option value="NIV">NIV</option>
-                <option value="AMP">AMP</option>
-                <option value="NASB">NASB</option>
-            </select>
-            <div id="select-container">
+            <div id="selection-container">
+                <select id="translation-selection">
+                    <button>
+                        <div>
+                            <selectedcontent></selectedcontent>
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m7 10l5 5l5-5z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <option value="NIV">NIV</option>
+                    <option value="AMP">AMP</option>
+                    <option value="NASB">NASB</option>
+                </select>
                 <select id="books" class="selections">
-                    <option>Select a Book</option>
+                    <button>
+                        <div>
+                            <selectedcontent></selectedcontent>
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m7 10l5 5l5-5z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                    <option>Select Book</option>
                     <option value="genesis">Genesis</option>
                     <option value="exodus">Exodus</option>
                     <option value="leviticus">Leviticus</option>
@@ -109,9 +125,25 @@
                     <option value="revelation">Revelation</option>
                 </select>
                 <select id="chapter" class="selections">
+                    <button>
+                        <div>
+                            <selectedcontent></selectedcontent>
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m7 10l5 5l5-5z"></path>
+                            </svg>
+                        </div>
+                    </button>
                     <option>Select Chapter</option>
                 </select>
                 <select id="verse" class="selections" multiple>
+                    <button>
+                        <div>
+                            <selectedcontent></selectedcontent>
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="m7 10l5 5l5-5z"></path>
+                            </svg>
+                        </div>
+                    </button>
                     <option>Select Verse</option>
                 </select>
                 <button id="save-selected">ADD</button>
